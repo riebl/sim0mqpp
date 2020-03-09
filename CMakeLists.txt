@@ -8,6 +8,7 @@ find_package(Boost 1.58 REQUIRED)
 
 set(SOURCES
     src/any.cpp
+    src/buffer_serialization.cpp
     src/identifier.cpp
     src/message.cpp
     src/primitive.cpp
