@@ -1,0 +1,121 @@
+#include "sim0mqpp/any.hpp"
+#include "sim0mqpp/primitive.hpp"
+#include "sim0mqpp/string.hpp"
+#include "sim0mqpp/serialization.hpp"
+#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
+
+namespace sim0mqpp
+{
+
+struct SerializationAny : public boost::static_visitor<>
+{
+    SerializationAny(SerializationOutput& out) : out_(out) {}
+
+    template<typename T>
+    void operator()(const T& t)
+    {
+        serialize(out_, t);
+    }
+
+    SerializationOutput& out_;
+};
+
+void serialize(SerializationOutput& out, const Any& any)
+{
+    SerializationAny visitor(out);
+    boost::apply_visitor(visitor, any);
+}
+
+FieldType deserialize(SerializationInput& in, Any& any)
+{
+    const auto ft = static_cast<FieldType>(in.read_byte());
+
+    switch (ft) {
+        case FieldType::BYTE_8: {
+            std::int8_t tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::SHORT_16: {
+            std::int16_t tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::INT_32: {
+            std::int32_t tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::LONG_64: {
+            std::int64_t tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::FLOAT_32: {
+            float tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::DOUBLE_64: {
+            double tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::BOOLEAN_8: {
+            bool tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::CHAR_8: {
+            char tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::CHAR_16: {
+            char16_t tmp;
+            in.read(tmp);
+            any = tmp; }
+            break;
+
+        case FieldType::STRING_8: {
+            std::string tmp;
+            deserialize(in, tmp);
+            any = std::move(tmp); }
+            break;
+
+        case FieldType::STRING_16: {
+            std::u16string tmp;
+            deserialize(in, tmp);
+            any = std::move(tmp); }
+            break;
+
+        case FieldType::FLOAT_32_UNIT: {
+            ScalarQuantity<float> tmp;
+            deserialize(in, tmp);
+            any = std::move(tmp); }
+            break;
+
+        case FieldType::DOUBLE_64_UNIT: {
+            ScalarQuantity<double> tmp;
+            deserialize(in, tmp);
+            any = std::move(tmp); }
+            break;
+
+        default:
+            in.error("unsupported field type");
+            break;
+    }
+
+    return ft;
+}
+
+} // namespace sim0mqpp
