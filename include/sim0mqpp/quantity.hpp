@@ -70,4 +70,7 @@ private:
 void serialize(SerializationOutput& out, const VectorQuantity<float>& q);
 void serialize(SerializationOutput& out, const VectorQuantity<double>& q);
 
+void deserialize(SerializationInput& in, VectorQuantity<float>& q);
+void deserialize(SerializationInput& in, VectorQuantity<double>& q);
+
 } // namespace sim0mqpp
