@@ -4,6 +4,7 @@
 #include "sim0mqpp/serialization.hpp"
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
+#include <cstdio>
 
 namespace sim0mqpp
 {
@@ -117,5 +118,83 @@ FieldType deserialize(SerializationInput& in, Any& any)
 
     return ft;
 }
+
+std::string to_string(const Any& any)
+{
+    struct Stringifier : public boost::static_visitor<std::string>
+    {
+        std::string operator()(std::int8_t byte)
+        {
+            std::snprintf(buf, sizeof(buf), "0x%hhX", byte);
+            return buf;
+        }
+
+        std::string operator()(std::int16_t i) { return std::to_string(i); }
+        std::string operator()(std::int32_t i) { return std::to_string(i); }
+        std::string operator()(std::int64_t i) { return std::to_string(i); }
+
+        std::string operator()(float f)
+        {
+            std::snprintf(buf, sizeof(buf), "%g", f);
+            return buf;
+        }
+
+        std::string operator()(double d)
+        {
+            std::snprintf(buf, sizeof(buf), "%g", d);
+            return buf;
+        }
+
+        std::string operator()(bool b) { return b ? "true" : "false"; }
+
+        std::string operator()(char c)
+        {
+            std::snprintf(buf, sizeof(buf), "'%c'", c);
+            return buf;
+        }
+
+        std::string operator()(char16_t c)
+        {
+            std::snprintf(buf, sizeof(buf), "'%lc'", c);
+            return buf;
+        }
+
+        std::string operator()(const std::string& s)
+        {
+            std::string r;
+            r.push_back('"');
+            r.append(s);
+            r.push_back('"');
+            return r;
+        }
+
+        std::string operator()(const std::u16string& s)
+        {
+            std::string r;
+            r.push_back('"');
+            r.append(s.begin(), s.end());
+            r.push_back('"');
+            return r;
+        }
+
+        std::string operator()(const ScalarQuantity<float>& q)
+        {
+            std::snprintf(buf, sizeof(buf), "%g (%s)", q.value(), to_cstr(q.unit()));
+            return buf;
+        }
+
+        std::string operator()(const ScalarQuantity<double>& q)
+        {
+            std::snprintf(buf, sizeof(buf), "%g (%s)", q.value(), to_cstr(q.unit()));
+            return buf;
+        }
+
+        char buf[64];
+    };
+
+    Stringifier visitor;
+    return boost::apply_visitor(visitor, any);
+}
+
 
 } // namespace sim0mqpp

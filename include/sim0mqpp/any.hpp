@@ -3,6 +3,7 @@
 #include "field_type.hpp"
 #include "quantity.hpp"
 #include <boost/variant/variant.hpp>
+#include <string>
 
 namespace sim0mqpp
 {
@@ -30,5 +31,7 @@ using Any = boost::variant<
 
 void serialize(SerializationOutput&, const Any&);
 FieldType deserialize(SerializationInput&, Any&);
+
+std::string to_string(const Any&);
 
 } // namespace sim0mqpp
