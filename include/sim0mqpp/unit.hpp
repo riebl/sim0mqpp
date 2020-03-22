@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace sim0mqpp
 {
@@ -53,5 +54,19 @@ enum class Unit : std::uint8_t
     AngularVelocity = 43,
     Momentum = 44
 };
+
+/**
+ * Get string representation of a unit
+ * \param u unit
+ * \return unit's string representation
+ */
+std::string to_string(Unit u);
+
+/**
+ * Get string representation of a unit
+ * \param u unit
+ * \return null-terminated string representation
+ */
+const char* to_cstr(Unit u);
 
 } // namespace sim0mqpp

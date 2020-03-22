@@ -14,6 +14,7 @@ set(SOURCES
     src/primitive.cpp
     src/quantity.cpp
     src/string.cpp
+    src/unit.cpp
 )
 
 if(NOT DEFINED SIM0MQPP_SHARED_LIB)
