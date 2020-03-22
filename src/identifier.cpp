@@ -2,9 +2,7 @@
 #include "sim0mqpp/primitive.hpp"
 #include "sim0mqpp/string.hpp"
 #include "sim0mqpp/serialization.hpp"
-#include <codecvt>
 #include <cstdint>
-#include <locale>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
 
@@ -69,8 +67,7 @@ std::string to_string(const Identifier& id)
         std::string operator()(const std::string& s) { return s; }
         std::string operator()(const std::u16string& s)
         {
-            std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
-            return converter.to_bytes(s);
+            return std::string { s.begin(), s.end() };
         }
     };
 
