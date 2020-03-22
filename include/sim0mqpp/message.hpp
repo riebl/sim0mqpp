@@ -23,7 +23,7 @@ struct Message
     std::vector<Any> payload;
 
     template<typename T>
-    const T* get_payload(std::size_t pos)
+    const T* get_payload(std::size_t pos) const
     {
         const T* elem = nullptr;
         if (payload.size() > pos) {
@@ -33,7 +33,7 @@ struct Message
     }
 
     template<Unit U, typename T = ScalarQuantity<double>>
-    const T* get_payload(std::size_t pos)
+    const T* get_payload(std::size_t pos) const
     {
         const T* elem = get_payload<T>(pos);
         if (elem && elem->unit() == U) {
