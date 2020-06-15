@@ -25,7 +25,9 @@ using Any = boost::variant<
     std::string,
     std::u16string,
     ScalarQuantity<float>,
-    ScalarQuantity<double>
+    ScalarQuantity<double>,
+    VectorQuantity<float>,
+    VectorQuantity<double>
     // array and matrix types missing yet
 >;
 

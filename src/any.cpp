@@ -111,6 +111,18 @@ FieldType deserialize(SerializationInput& in, Any& any)
             any = std::move(tmp); }
             break;
 
+        case FieldType::FLOAT_32_UNIT_ARRAY: {
+            VectorQuantity<float> tmp;
+            deserialize(in, tmp);
+            any = std::move(tmp); }
+            break;
+
+        case FieldType::DOUBLE_64_UNIT_ARRAY: {
+            VectorQuantity<double> tmp;
+            deserialize(in, tmp);
+            any = std::move(tmp); }
+            break;
+
         default:
             in.error("unsupported field type");
             break;
@@ -118,6 +130,28 @@ FieldType deserialize(SerializationInput& in, Any& any)
 
     return ft;
 }
+
+namespace
+{
+
+template<typename T>
+void print(char* buf, std::size_t len, const VectorQuantity<T>& q)
+{
+    const auto& v = q.values();
+    if (v.empty()) {
+        std::snprintf(buf, len, "[empty] (%s)", to_cstr(q.unit()));
+    } else if (v.size() == 1) {
+        std::snprintf(buf, len, "[%g] (%s)", v[0], to_cstr(q.unit()));
+    } else if (v.size() == 2) {
+        std::snprintf(buf, len, "[%g, %g] (%s)", v[0], v[1], to_cstr(q.unit()));
+    } else if (v.size() == 3) {
+        std::snprintf(buf, len, "[%g, %g, %g] (%s)", v[0], v[1], v[2], to_cstr(q.unit()));
+    } else {
+        std::snprintf(buf, len, "[%d values] (%s)", v.size(), to_cstr(q.unit()));
+    }
+}
+
+} // namespace
 
 std::string to_string(const Any& any)
 {
@@ -186,6 +220,18 @@ std::string to_string(const Any& any)
         std::string operator()(const ScalarQuantity<double>& q)
         {
             std::snprintf(buf, sizeof(buf), "%g (%s)", q.value(), to_cstr(q.unit()));
+            return buf;
+        }
+
+        std::string operator()(const VectorQuantity<float>& q)
+        {
+            print(buf, sizeof(buf), q);
+            return buf;
+        }
+
+        std::string operator()(const VectorQuantity<double>& q)
+        {
+            print(buf, sizeof(buf), q);
             return buf;
         }
 
