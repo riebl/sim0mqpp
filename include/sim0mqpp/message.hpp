@@ -42,6 +42,12 @@ struct Message
             return nullptr;
         }
     }
+
+    template<typename T, Unit U>
+    const T* get_payload(std::size_t pos) const
+    {
+        return get_payload<U, T>(pos);
+    }
 };
 
 void serialize(SerializationOutput&, const Message&);
