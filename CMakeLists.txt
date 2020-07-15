@@ -40,31 +40,34 @@ set_target_properties(sim0mqpp PROPERTIES
 
 # install and export
 add_library(sim0mqpp::sim0mqpp ALIAS sim0mqpp)
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(sim0mqpp-version.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion
-)
-install(TARGETS sim0mqpp EXPORT sim0mqpp-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-install(EXPORT sim0mqpp-targets
-    FILE sim0mqpp-targets.cmake
-    NAMESPACE sim0mqpp::
-    DESTINATION lib/cmake/sim0mqpp
-)
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-configure_file(sim0mqpp-config.cmake.in sim0mqpp-config.cmake @ONLY)
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/sim0mqpp-config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/sim0mqpp-version.cmake"
-    DESTINATION lib/cmake/sim0mqpp
-)
+option(SIM0MQPP_INSTALL "Generate install target for sim0mq++" ON)
+if(SIM0MQPP_INSTALL)
+    include(GNUInstallDirs)
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file(sim0mqpp-version.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY AnyNewerVersion
+    )
+    install(TARGETS sim0mqpp EXPORT sim0mqpp-targets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+    install(EXPORT sim0mqpp-targets
+        FILE sim0mqpp-targets.cmake
+        NAMESPACE sim0mqpp::
+        DESTINATION lib/cmake/sim0mqpp
+    )
+    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    configure_file(sim0mqpp-config.cmake.in sim0mqpp-config.cmake @ONLY)
+    install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/sim0mqpp-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/sim0mqpp-version.cmake"
+        DESTINATION lib/cmake/sim0mqpp
+    )
 
-set(CMAKE_EXPORT_PACKAGE_REGISTRY OFF)
-export(TARGETS sim0mqpp NAMESPACE sim0mqpp:: FILE sim0mqpp-targets.cmake)
-export(PACKAGE sim0mqpp)
+    set(CMAKE_EXPORT_PACKAGE_REGISTRY OFF)
+    export(TARGETS sim0mqpp NAMESPACE sim0mqpp:: FILE sim0mqpp-targets.cmake)
+    export(PACKAGE sim0mqpp)
+endif()
