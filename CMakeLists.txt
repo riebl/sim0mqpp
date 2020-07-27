@@ -57,14 +57,14 @@ if(SIM0MQPP_INSTALL)
     install(EXPORT sim0mqpp-targets
         FILE sim0mqpp-targets.cmake
         NAMESPACE sim0mqpp::
-        DESTINATION lib/cmake/sim0mqpp
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/sim0mqpp
     )
     install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
     configure_file(sim0mqpp-config.cmake.in sim0mqpp-config.cmake @ONLY)
     install(FILES
         "${CMAKE_CURRENT_BINARY_DIR}/sim0mqpp-config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/sim0mqpp-version.cmake"
-        DESTINATION lib/cmake/sim0mqpp
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/sim0mqpp
     )
 
     set(CMAKE_EXPORT_PACKAGE_REGISTRY OFF)
