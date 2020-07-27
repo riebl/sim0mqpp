@@ -112,11 +112,11 @@ void BufferDeserializer::read(std::int8_t& i)
 void BufferDeserializer::read(std::int16_t& i)
 {
     if (std::distance(m_cursor, m_end) >= 2) {
-        const unsigned char* cursor = &(*m_cursor);
+        std::memcpy(&i, &(*m_cursor), 2);
         if (m_big_endian) {
-            i = boost::endian::endian_load<std::int16_t, 2, boost::endian::order::big>(cursor);
+            boost::endian::big_to_native_inplace(i);
         } else {
-            i = boost::endian::endian_load<std::int16_t, 2, boost::endian::order::little>(cursor);
+            boost::endian::little_to_native_inplace(i);
         }
         std::advance(m_cursor, 2);
     } else {
@@ -128,11 +128,11 @@ void BufferDeserializer::read(std::int16_t& i)
 void BufferDeserializer::read(std::int32_t& i)
 {
     if (std::distance(m_cursor, m_end) >= 4) {
-        const unsigned char* cursor = &(*m_cursor);
+        std::memcpy(&i, &(*m_cursor), 4);
         if (m_big_endian) {
-            i = boost::endian::endian_load<std::int32_t, 4, boost::endian::order::big>(cursor);
+            boost::endian::big_to_native_inplace(i);
         } else {
-            i = boost::endian::endian_load<std::int32_t, 4, boost::endian::order::little>(cursor);
+            boost::endian::little_to_native_inplace(i);
         }
         std::advance(m_cursor, 4);
     } else {
@@ -144,11 +144,11 @@ void BufferDeserializer::read(std::int32_t& i)
 void BufferDeserializer::read(std::int64_t& i)
 {
     if (std::distance(m_cursor, m_end) >= 8) {
-        const unsigned char* cursor = &(*m_cursor);
+        std::memcpy(&i, &(*m_cursor), 8);
         if (m_big_endian) {
-            i = boost::endian::endian_load<std::int64_t, 8, boost::endian::order::big>(cursor);
+            boost::endian::big_to_native_inplace(i);
         } else {
-            i = boost::endian::endian_load<std::int64_t, 8, boost::endian::order::little>(cursor);
+            boost::endian::little_to_native_inplace(i);
         }
         std::advance(m_cursor, 8);
     } else {
@@ -159,11 +159,13 @@ void BufferDeserializer::read(std::int64_t& i)
 
 void BufferDeserializer::read(float& f)
 {
+    static_assert(sizeof(float) == sizeof(std::int32_t), "float has not the same size as int32_t");
     read(reinterpret_cast<std::int32_t&>(f));
 }
 
 void BufferDeserializer::read(double& d)
 {
+    static_assert(sizeof(double) == sizeof(std::int64_t), "double has not the same size as int64_t");
     read(reinterpret_cast<std::int64_t&>(d));
 }
 
@@ -179,6 +181,7 @@ void BufferDeserializer::read(char& c)
 
 void BufferDeserializer::read(char16_t& c)
 {
+    static_assert(sizeof(char16_t) == sizeof(std::int16_t), "char16_t has not the same size as int16_t");
     read(reinterpret_cast<std::int16_t&>(c));
 }
 
