@@ -53,4 +53,11 @@ struct Message
 void serialize(SerializationOutput&, const Message&);
 void deserialize(SerializationInput&, Message&);
 
+/**
+ * Number of octets occupied by serialized message
+ * \param msg message
+ * \return number of octets
+ */
+std::size_t size(const Message&);
+
 } // namespace sim0mqpp

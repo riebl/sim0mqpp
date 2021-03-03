@@ -1,3 +1,4 @@
+#include "sim0mqpp/counter_serialization.hpp"
 #include "sim0mqpp/message.hpp"
 #include "sim0mqpp/primitive.hpp"
 #include "sim0mqpp/string.hpp"
@@ -96,6 +97,13 @@ void deserialize(SerializationInput& in, Message& msg)
         deserialize(in, tmp);
         msg.payload.emplace_back(std::move(tmp));
     }
+}
+
+std::size_t size(const Message& msg)
+{
+    CounterSerializer output;
+    serialize(output, msg);
+    return output.counter();
 }
 
 } // namespace sim0mqpp
